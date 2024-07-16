@@ -1,0 +1,8 @@
+#[derive(Queryable, Deserialize, Serialize, Selectable, Debug, Insertable, Iterable, PartialEq)]
+#[diesel(table_name = crate::schema::{{table_name}})]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+pub struct {{ struct_name }} {
+{% for field in fields %}
+    pub {{ field.name }}: {{ field.type }},
+{% endfor %}
+}
