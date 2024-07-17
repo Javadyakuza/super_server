@@ -1,6 +1,8 @@
+use std::{fs::{self, File}, io::Write, path::Path};
+
 use crate::models::{Column, Table};
 
-fn write_to_file(file_path: &str, content: &str) -> std::io::Result<()> {
+fn generate_tables(file_path: &str, content: &str) -> std::io::Result<()> {
     // Create the necessary directories if they don't exist
     if let Some(parent) = Path::new(file_path).parent() {
         fs::create_dir_all(parent)?;
@@ -14,10 +16,16 @@ fn write_to_file(file_path: &str, content: &str) -> std::io::Result<()> {
 
 pub fn get_tables() -> Vec<Table>{
 
-Table {
-    name: "sometable".to_string()
+    // reading the json file
+    let types =
+vec![Table {
+    name: "sometable".to_string(),
+    fields: vec![Column{ name: "somecolumn".to_string(), ty: "somecolumn".to_string(), nullable: false }], 
+    primary_key: "somecolumn".to_string()
+}]
 }
-}
+
+
 // let tera = match Tera::new("templates/*.tera") {
 //     Ok(t) => t,
 //     Err(e) => {
