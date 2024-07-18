@@ -3,6 +3,6 @@
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct {{ struct_name }} {
 {% for field in fields %}
-    pub {{ field.name }}: {{ field.type }},
+    pub {{ field.name }}: {{ field.ty }},
 {% endfor %}
 }

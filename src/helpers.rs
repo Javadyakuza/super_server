@@ -1,20 +1,11 @@
 use std::{collections::HashMap, fs::{self, File, OpenOptions}, io::{Read, Write}, path::Path};
 
 use regex::Regex;
+use tera::{Context, Tera};
 
 use crate::models::{Column, Table};
 
-fn generate_tables(file_path: &str, content: &str) -> std::io::Result<()> {
-    // Create the necessary directories if they don't exist
-    if let Some(parent) = Path::new(file_path).parent() {
-        fs::create_dir_all(parent).unwrap();
-    }
 
-    // Open the file in write mode, create if it doesn't exist
-    let mut file = File::create(file_path).unwrap();
-    file.write_all(content.as_bytes()).unwrap();
-    Ok(())
-}
 
 pub fn get_tables(schema_path: &str) -> Vec<Table>{
 
@@ -75,4 +66,58 @@ if el == "->" {
 
     println!("{:?} \n ", table);
     table
+}
+
+
+pub fn generate_tables(file_path: &str, tables: Vec<Table>) -> std::io::Result<()> {
+    // Create the necessary directories if they don't exist
+    if let Some(parent) = Path::new(file_path).parent() {
+        fs::create_dir_all(parent).unwrap();
+    }
+    
+    let tera = match Tera::new("templates/*.tera") {
+        Ok(t) => t,
+        Err(e) => {
+            println!("Parsing error(s): {}", e);
+            std::process::exit(1);
+        }
+    };
+    
+    // // Define the struct name and fields
+    // let struct_name = "Users".to_string();
+    // let mut fields = Vec::new();
+    
+    // // Populate fields as a vector of maps
+    // let field_map = |name: &str, typ: &str| {
+    //     let mut map = HashMap::new();
+    //     map.insert("name".to_string(), name.to_string());
+    //     map.insert("type".to_string(), typ.to_string());
+    //     map
+    // };
+    
+    // fields.push(field_map("username", "String"));
+    // fields.push(field_map("email", "String"));
+    // fields.push(field_map("password", "String"));
+    // fields.push(field_map("phone_number", "String"));
+    
+    // Create a context and insert the struct name and fields
+    let mut final_result: String = Default::default();
+    for table in tables.into_iter() {        
+        let struct_name = table.name[0..1].to_ascii_uppercase() + &table.name[1..table.name.len()];
+        let mut context = Context::new();
+        context.insert("table_name", &table.name);
+        context.insert("struct_name", &struct_name);
+        context.insert("fields", &table.columns);
+        final_result.push_str("\n");
+        final_result.push_str(tera.render("db_model.tera", &context).unwrap().as_str());
+        
+    }
+
+    
+    // Render the template with the provided context
+    // println!("{}", rendered); 
+    // Open the file in write mode, create if it doesn't exist
+    let mut file = File::create(file_path).unwrap();
+    file.write_all(final_result.as_bytes()).unwrap();
+    Ok(())
 }
