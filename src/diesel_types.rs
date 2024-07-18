@@ -1,5 +1,5 @@
 
-pub fn types(sql_type: String) -> String {
+pub fn get_rust_eq(sql_type: String) -> String {
 
   match sql_type.as_str() {
     "Nullable<T>" => { "Option<T>".to_string()},

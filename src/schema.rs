@@ -1,4 +1,3 @@
-
 diesel::table! {
     chat_room_participants (participant_id) {
         participant_id -> Int4,

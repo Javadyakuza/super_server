@@ -586,6 +586,7 @@ dependencies = [
 name = "super_server"
 version = "0.1.0"
 dependencies = [
+ "regex",
  "tera",
 ]
 
