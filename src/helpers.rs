@@ -103,7 +103,7 @@ pub fn generate_tables(file_path: &str, tables: Vec<Table>) -> std::io::Result<(
     // Create a context and insert the struct name and fields
     let mut final_result: String = Default::default();
     for table in tables.into_iter() {        
-        let struct_name = table.name[0..1].to_ascii_uppercase() + &table.name[1..table.name.len()];
+        let struct_name = table.std_struct_name();
         let mut context = Context::new();
         context.insert("table_name", &table.name);
         context.insert("struct_name", &struct_name);

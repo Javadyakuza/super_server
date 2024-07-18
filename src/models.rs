@@ -33,13 +33,17 @@ pub struct Table {
 
 
 impl Table {
-pub fn std_struct_name (&mut self)  -> String{
-    let tmp_name = self.name.chars();
-    for (i,c) in tmp_name.into_iter().enumerate(){
+pub fn std_struct_name (&self)  -> String{
+
+    let tmp_chars = self.name.chars();
+    let mut tmp_name  = self.name.clone();
+    for (i,c) in tmp_chars.into_iter().enumerate(){
         if c == '_'{
-            let _ = self.name.replace(format!("_{}", &self.name[i..i+1]).as_str(),&self.name[i..i+1].to_ascii_uppercase());
+            tmp_name  = tmp_name.replace(format!("_{}", &self.name[i+1..i+2]).as_str(),&self.name[i+1..i+2].to_ascii_uppercase());
         }
     }
-    self.name[0..1].to_ascii_uppercase() + &self.name[1..self.name.len()]
+    let std_name = self.name[0..1].to_ascii_uppercase() + &tmp_name[1..tmp_name.len()];
+    println!("returning this one : {}", std_name);
+    std_name
     
 }}
